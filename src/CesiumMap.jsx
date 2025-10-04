@@ -6,6 +6,9 @@ const CesiumMap = () => {
   const cesiumContainer = useRef(null);
 
   useEffect(() => {
+    // Set Cesium base URL to the copied assets
+    window.CESIUM_BASE_URL = '/cesium/';
+    
     let viewer;
     try {
       viewer = new Viewer(cesiumContainer.current, {
