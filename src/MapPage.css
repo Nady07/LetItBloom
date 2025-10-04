@@ -1,0 +1,417 @@
+/* ===================== MapPage Styles - Let It Bloom Palette ===================== */
+
+.mappage-container {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, var(--spring-end), var(--sky-blue));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Header */
+.mappage-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 3px solid var(--leaf-green);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.mappage-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.mappage-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--leaf-green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mappage-back-btn:hover {
+  background: var(--sky-blue);
+  transform: translateY(-1px);
+}
+
+.mappage-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mappage-title-icon {
+  color: var(--leaf-green);
+  width: 28px;
+  height: 28px;
+}
+
+.mappage-title h1 {
+  color: var(--gray-800);
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.mappage-header-right {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mappage-control-btn {
+  background: rgba(46, 139, 87, 0.1);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0.75rem;
+  cursor: pointer;
+  color: var(--leaf-green);
+  transition: all 0.2s;
+}
+
+.mappage-control-btn:hover,
+.mappage-control-btn.active {
+  background: var(--leaf-green);
+  color: white;
+  border-color: var(--leaf-green);
+}
+
+/* Main Content */
+.mappage-content {
+  flex: 1;
+  position: relative;
+  display: flex;
+}
+
+.mappage-map-container {
+  flex: 1;
+  position: relative;
+  background: var(--sky-blue);
+  height: calc(100vh - 80px); /* Altura específica menos el header */
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Side Panels */
+.mappage-layers-panel,
+.mappage-info-panel {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(46, 139, 87, 0.2);
+  z-index: 500;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+.mappage-layers-panel {
+  top: 20px;
+  left: 20px;
+  width: 280px;
+  padding: 1.5rem;
+}
+
+.mappage-info-panel {
+  top: 20px;
+  right: 20px;
+  width: 320px;
+  padding: 1.5rem;
+}
+
+.mappage-layers-panel h3,
+.mappage-info-panel h3 {
+  color: var(--gray-800);
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--leaf-green);
+}
+
+/* Map Mode Buttons */
+.mappage-map-modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.mappage-mode-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(46, 139, 87, 0.1);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0.75rem 0.5rem;
+  cursor: pointer;
+  color: var(--leaf-green);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.mappage-mode-btn:hover,
+.mappage-mode-btn.active {
+  background: linear-gradient(135deg, var(--leaf-green), var(--sky-blue));
+  color: white;
+  border-color: var(--leaf-green);
+  transform: translateY(-1px);
+}
+
+/* Layer Options */
+.mappage-layer-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mappage-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.mappage-checkbox:hover {
+  background: rgba(46, 139, 87, 0.1);
+}
+
+.mappage-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--leaf-green);
+}
+
+.mappage-checkbox span {
+  color: var(--gray-700);
+  font-weight: 500;
+}
+
+/* Location Details */
+.mappage-location-details h4 {
+  color: var(--gray-800);
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 0 0 1rem 0;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, var(--spring-start), var(--spring-end));
+  color: white;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.mappage-details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.mappage-detail-item {
+  background: rgba(46, 139, 87, 0.05);
+  padding: 0.75rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--leaf-green);
+}
+
+.mappage-detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.mappage-detail-item.threats {
+  border-left-color: var(--blossom-pink);
+  background: rgba(255, 123, 172, 0.1);
+}
+
+.mappage-detail-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mappage-detail-value {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.mappage-detail-value.intensity-high {
+  color: var(--leaf-green);
+}
+
+.mappage-detail-value.intensity-medium {
+  color: var(--sun-yellow);
+}
+
+.mappage-detail-value.intensity-low {
+  color: var(--sky-blue);
+}
+
+.mappage-detail-value.ndvi-value {
+  color: var(--leaf-green);
+  font-size: 1.2rem;
+}
+
+/* No Selection State */
+.mappage-no-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--gray-600);
+}
+
+.mappage-placeholder-icon {
+  color: var(--leaf-green);
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.mappage-no-selection p {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.mappage-placeholder-tip {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+/* Stats Bar */
+.mappage-stats-bar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 2px solid var(--leaf-green);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.mappage-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.mappage-stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--leaf-green);
+  line-height: 1;
+}
+
+.mappage-stat-label {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mappage-header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .mappage-header-left {
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .mappage-title h1 {
+    font-size: 1.2rem;
+  }
+  
+  .mappage-layers-panel,
+  .mappage-info-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100vw - 40px);
+    max-width: 400px;
+    max-height: 70vh;
+  }
+  
+  .mappage-stats-bar {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .mappage-stat {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
+/* Animations */
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.mappage-layers-panel {
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
+.mappage-info-panel {
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+/* Scrollbar Styling */
+.mappage-layers-panel::-webkit-scrollbar,
+.mappage-info-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mappage-layers-panel::-webkit-scrollbar-track,
+.mappage-info-panel::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.mappage-layers-panel::-webkit-scrollbar-thumb,
+.mappage-info-panel::-webkit-scrollbar-thumb {
+  background: var(--leaf-green);
+  border-radius: 3px;
+}
+
+.mappage-layers-panel::-webkit-scrollbar-thumb:hover,
+.mappage-info-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--sky-blue);
+}

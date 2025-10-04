@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Leaf, MapPin, Calendar, TrendingUp, Globe, Sun, Droplets, Wind } from 'lucide-react';
+import { Leaf, MapPin, Calendar, TrendingUp, Globe, Sun, Droplets, Wind, ExternalLink } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
 import CesiumMap from './CesiumMap';
+import MapPage from './MapPage';
 import './LetItBloom.css';
 
 
 const LetItBloom = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const [showMapPage, setShowMapPage] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [activeSeason, setActiveSeason] = useState('spring');
   const [floatingElements, setFloatingElements] = useState([]);
@@ -70,6 +72,11 @@ const LetItBloom = () => {
   const scrollToSection = (section) => {
     setActiveSection(section);
   };
+
+  // Show MapPage if requested
+  if (showMapPage) {
+    return <MapPage onBackToHome={() => setShowMapPage(false)} />;
+  }
 
   return (
   <div className="letitbloom-bg">
@@ -159,62 +166,71 @@ const LetItBloom = () => {
             </div>
           </div>
 
-          {/* Map & Info Grid */}
-          <div className="letitbloom-dashboard-grid">
-            {/* Map View */}
-            <div className="letitbloom-card letitbloom-map-card">
-              <h3 className="letitbloom-card-title"><MapPin className="letitbloom-icon-green" /> Bloom Locations</h3>
+          {/* Full Screen Map */}
+          <div className="letitbloom-fullscreen-map-container">
+            <div className="letitbloom-card letitbloom-fullscreen-map-card">
+              <div className="letitbloom-map-header">
+                <h3 className="letitbloom-card-title"><MapPin className="letitbloom-icon-green" /> Interactive Global Bloom Map</h3>
+                <button 
+                  className="letitbloom-fullscreen-btn"
+                  onClick={() => setShowMapPage(true)}
+                  title="Open Full Map Explorer"
+                >
+                  <ExternalLink size={18} />
+                  <span>Full Explorer</span>
+                </button>
+              </div>
               <CesiumMap />
             </div>
+          </div>
 
-            {/* Info Panel */}
-            <div className="letitbloom-info-panel">
-              <div className="letitbloom-card">
-                <h3 className="letitbloom-card-title">
-                  {selectedRegion ? selectedRegion.name : 'Select a Location'}
-                </h3>
-                {selectedRegion ? (
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Bloom Date:</span>
-                      <span className="font-semibold text-green-600">{selectedRegion.date}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Vegetation Type:</span>
-                      <span className="font-semibold">{selectedRegion.type}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">NDVI Index:</span>
-                      <span className="font-semibold text-blue-600">{selectedRegion.ndvi}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Intensity:</span>
-                      <span className={`font-semibold px-3 py-1 rounded-full ${
-                        selectedRegion.intensity === 'High' ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'
-                      }`}>
-                        {selectedRegion.intensity}
-                      </span>
-                    </div>
+          {/* Info Panels Below Map */}
+          <div className="letitbloom-bottom-panels">
+            <div className="letitbloom-card letitbloom-location-card">
+              <h3 className="letitbloom-card-title">
+                {selectedRegion ? selectedRegion.name : 'Select a Location'}
+              </h3>
+              {selectedRegion ? (
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Bloom Date:</span>
+                    <span className="font-semibold text-green-600">{selectedRegion.date}</span>
                   </div>
-                ) : (
-                  <p className="letitbloom-info-placeholder">Click on a marker to view bloom details</p>
-                )}
-              </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Vegetation Type:</span>
+                    <span className="font-semibold">{selectedRegion.type}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">NDVI Index:</span>
+                    <span className="font-semibold text-blue-600">{selectedRegion.ndvi}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Intensity:</span>
+                    <span className={`font-semibold px-3 py-1 rounded-full ${
+                      selectedRegion.intensity === 'High' ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'
+                    }`}>
+                      {selectedRegion.intensity}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <p className="letitbloom-info-placeholder">Click on a marker to view bloom details</p>
+              )}
+            </div>
 
-              {/* NDVI Chart */}
-              <div className="letitbloom-card">
-                <h3 className="letitbloom-card-title"><TrendingUp className="letitbloom-icon-green" /> Vegetation Trend</h3>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={ndviData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="ndvi" stroke="#2E8B57" strokeWidth={3} />
-                    <Line type="monotone" dataKey="evi" stroke="#FF7BAC" strokeWidth={2} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+            {/* NDVI Chart */}
+            <div className="letitbloom-card letitbloom-trend-card">
+              <h3 className="letitbloom-card-title"><TrendingUp className="letitbloom-icon-green" /> Vegetation Trend</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={ndviData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="ndvi" stroke="#2E8B57" strokeWidth={3} />
+                  <Line type="monotone" dataKey="evi" stroke="#FF7BAC" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
