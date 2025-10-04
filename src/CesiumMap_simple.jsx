@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Viewer, Cartesian3, Color } from 'cesium';
-import { Search, MapPin } from 'lucide-react';
+import { Search, MapPin, Home } from 'lucide-react';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 
 const CesiumMap = ({ onLocationSelect }) => {
@@ -58,7 +58,7 @@ const CesiumMap = ({ onLocationSelect }) => {
 
   const flyToCountry = (countryName) => {
     const country = countries[countryName];
-    if (country && viewerRef.current && !viewerRef.current.isDestroyed()) {
+    if (country && viewerRef.current) {
       setIsSearching(true);
       viewerRef.current.scene.camera.flyTo({
         destination: Cartesian3.fromDegrees(country.lon, country.lat, country.zoom),
@@ -73,12 +73,20 @@ const CesiumMap = ({ onLocationSelect }) => {
               zoom: country.zoom
             });
           }
-        },
-        cancel: () => {
-          setIsSearching(false);
         }
       });
       setSearchTerm(countryName);
+      setSuggestions([]);
+    }
+  };
+
+  const resetToHome = () => {
+    if (viewerRef.current) {
+      viewerRef.current.scene.camera.flyTo({
+        destination: Cartesian3.fromDegrees(0, 0, 20000000),
+        duration: 2.0
+      });
+      setSearchTerm('');
       setSuggestions([]);
     }
   };
@@ -95,14 +103,13 @@ const CesiumMap = ({ onLocationSelect }) => {
         animation: false,
         baseLayerPicker: false,
         geocoder: false,
-        homeButton: false,
+        homeButton: true,
         sceneModePicker: true,
         navigationHelpButton: true,
         infoBox: true,
         selectionIndicator: true,
         fullscreenButton: true,
-        vrButton: false,
-        creditContainer: document.createElement('div')
+        vrButton: false
       });
       
       // Store viewer reference
@@ -196,6 +203,15 @@ const CesiumMap = ({ onLocationSelect }) => {
           </div>
         )}
       </div>
+      
+      {/* Home Button */}
+      <button 
+        onClick={resetToHome}
+        className="cesium-home-button"
+        title="Return to Earth view"
+      >
+        <Home size={20} />
+      </button>
       
       {/* Cesium Map Container */}
       <div ref={cesiumContainer} style={{ width: '100%', height: '100%' }} />

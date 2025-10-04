@@ -3,7 +3,7 @@
 .mappage-container {
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(135deg, var(--spring-end), var(--sky-blue));
+  background: var(--background-gradient);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -12,14 +12,14 @@
 
 /* Header */
 .mappage-header {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
-  border-bottom: 3px solid var(--leaf-green);
+  border-bottom: 3px solid var(--primary);
   padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(44, 85, 48, 0.1);
   z-index: 1000;
 }
 
@@ -33,19 +33,20 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--leaf-green);
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 8px;
   padding: 0.75rem 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .mappage-back-btn:hover {
-  background: var(--sky-blue);
-  transform: translateY(-1px);
+  background: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(44, 85, 48, 0.2);
 }
 
 .mappage-title {
@@ -55,13 +56,13 @@
 }
 
 .mappage-title-icon {
-  color: var(--leaf-green);
+  color: var(--primary);
   width: 28px;
   height: 28px;
 }
 
 .mappage-title h1 {
-  color: var(--gray-800);
+  color: var(--dark);
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
@@ -73,20 +74,22 @@
 }
 
 .mappage-control-btn {
-  background: rgba(46, 139, 87, 0.1);
+  background: rgba(44, 85, 48, 0.1);
   border: 2px solid transparent;
   border-radius: 8px;
   padding: 0.75rem;
   cursor: pointer;
-  color: var(--leaf-green);
-  transition: all 0.2s;
+  color: var(--primary);
+  transition: all 0.3s ease;
 }
 
 .mappage-control-btn:hover,
 .mappage-control-btn.active {
-  background: var(--leaf-green);
+  background: var(--primary);
   color: white;
-  border-color: var(--leaf-green);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(44, 85, 48, 0.2);
 }
 
 /* Main Content */
@@ -99,7 +102,7 @@
 .mappage-map-container {
   flex: 1;
   position: relative;
-  background: var(--sky-blue);
+  background: var(--dark);
   height: calc(100vh - 80px); /* Altura específica menos el header */
   width: 100%;
   overflow: hidden;
@@ -109,11 +112,11 @@
 .mappage-layers-panel,
 .mappage-info-panel {
   position: absolute;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(15px);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(46, 139, 87, 0.2);
+  box-shadow: 0 8px 32px rgba(44, 85, 48, 0.15);
+  border: 1px solid var(--accent);
   z-index: 500;
   max-height: calc(100vh - 180px);
   overflow-y: auto;
@@ -135,12 +138,12 @@
 
 .mappage-layers-panel h3,
 .mappage-info-panel h3 {
-  color: var(--gray-800);
+  color: var(--dark);
   font-size: 1.2rem;
   font-weight: bold;
   margin: 0 0 1rem 0;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--leaf-green);
+  border-bottom: 2px solid var(--primary);
 }
 
 /* Map Mode Buttons */

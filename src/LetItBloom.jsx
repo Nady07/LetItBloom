@@ -4,7 +4,6 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
-import CesiumMap from './CesiumMap';
 import MapPage from './MapPage';
 import './LetItBloom.css';
 
@@ -156,7 +155,7 @@ const LetItBloom = () => {
               </select>
             </div>
             <div className="letitbloom-filter-card">
-              <Leaf className="letitbloom-icon-pink" />
+              <Leaf className="letitbloom-icon-accent" />
               <select className="letitbloom-select">
                 <option>All Vegetation</option>
                 <option>Forests</option>
@@ -166,69 +165,77 @@ const LetItBloom = () => {
             </div>
           </div>
 
-          {/* Full Screen Map */}
-          <div className="letitbloom-fullscreen-map-container">
-            <div className="letitbloom-card letitbloom-fullscreen-map-card">
-              <div className="letitbloom-map-header">
-                <h3 className="letitbloom-card-title"><MapPin className="letitbloom-icon-green" /> Interactive Global Bloom Map</h3>
-                <button 
-                  className="letitbloom-fullscreen-btn"
-                  onClick={() => setShowMapPage(true)}
-                  title="Open Full Map Explorer"
-                >
-                  <ExternalLink size={18} />
-                  <span>Full Explorer</span>
-                </button>
+          {/* Map Access Card */}
+          <div className="letitbloom-map-access-container">
+            <div className="letitbloom-card letitbloom-map-access-card">
+              <div className="letitbloom-map-access-content">
+                <div className="letitbloom-map-access-icon">
+                  <Globe size={48} className="letitbloom-icon-green" />
+                </div>
+                <div className="letitbloom-map-access-info">
+                  <h3 className="letitbloom-card-title">
+                    <MapPin className="letitbloom-icon-green" /> 
+                    Interactive Global Bloom Map
+                  </h3>
+                  <p className="letitbloom-map-access-description">
+                    Explore our interactive 3D globe with real-time vegetation data from NASA satellites. 
+                    Search countries, discover bloom locations, and analyze vegetation patterns worldwide.
+                  </p>
+                  <div className="letitbloom-map-access-features">
+                    <span className="letitbloom-feature-tag">🔍 Country Search</span>
+                    <span className="letitbloom-feature-tag">🌍 3D Globe</span>
+                    <span className="letitbloom-feature-tag">📍 Bloom Markers</span>
+                    <span className="letitbloom-feature-tag">🛰️ NASA Data</span>
+                  </div>
+                </div>
               </div>
-              <CesiumMap />
+              <button 
+                className="letitbloom-map-access-btn"
+                onClick={() => setShowMapPage(true)}
+              >
+                <ExternalLink size={20} />
+                <span>Explore Interactive Map</span>
+              </button>
             </div>
           </div>
 
-          {/* Info Panels Below Map */}
-          <div className="letitbloom-bottom-panels">
-            <div className="letitbloom-card letitbloom-location-card">
+          {/* Dashboard Stats */}
+          <div className="letitbloom-dashboard-stats">
+            <div className="letitbloom-card letitbloom-stats-card">
               <h3 className="letitbloom-card-title">
-                {selectedRegion ? selectedRegion.name : 'Select a Location'}
+                <TrendingUp className="letitbloom-icon-green" /> Global Vegetation Overview
               </h3>
-              {selectedRegion ? (
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Bloom Date:</span>
-                    <span className="font-semibold text-green-600">{selectedRegion.date}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Vegetation Type:</span>
-                    <span className="font-semibold">{selectedRegion.type}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">NDVI Index:</span>
-                    <span className="font-semibold text-blue-600">{selectedRegion.ndvi}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Intensity:</span>
-                    <span className={`font-semibold px-3 py-1 rounded-full ${
-                      selectedRegion.intensity === 'High' ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'
-                    }`}>
-                      {selectedRegion.intensity}
-                    </span>
-                  </div>
+              <div className="letitbloom-stats-grid">
+                <div className="letitbloom-stat-item">
+                  <span className="letitbloom-stat-number">4,326</span>
+                  <span className="letitbloom-stat-label">Active Bloom Locations</span>
                 </div>
-              ) : (
-                <p className="letitbloom-info-placeholder">Click on a marker to view bloom details</p>
-              )}
+                <div className="letitbloom-stat-item">
+                  <span className="letitbloom-stat-number">0.68</span>
+                  <span className="letitbloom-stat-label">Global NDVI Average</span>
+                </div>
+                <div className="letitbloom-stat-item">
+                  <span className="letitbloom-stat-number">156</span>
+                  <span className="letitbloom-stat-label">Countries Monitored</span>
+                </div>
+                <div className="letitbloom-stat-item">
+                  <span className="letitbloom-stat-number">24/7</span>
+                  <span className="letitbloom-stat-label">Real-time Monitoring</span>
+                </div>
+              </div>
             </div>
 
-            {/* NDVI Chart */}
+            {/* NDVI Trend Chart */}
             <div className="letitbloom-card letitbloom-trend-card">
-              <h3 className="letitbloom-card-title"><TrendingUp className="letitbloom-icon-green" /> Vegetation Trend</h3>
+              <h3 className="letitbloom-card-title"><TrendingUp className="letitbloom-icon-green" /> Global Vegetation Trend 2025</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={ndviData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
-                  <Line type="monotone" dataKey="ndvi" stroke="#2E8B57" strokeWidth={3} />
-                  <Line type="monotone" dataKey="evi" stroke="#FF7BAC" strokeWidth={2} />
+                  <Line type="monotone" dataKey="ndvi" stroke="#2E8B57" strokeWidth={3} name="NDVI Index" />
+                  <Line type="monotone" dataKey="evi" stroke="#FF7BAC" strokeWidth={2} name="EVI Index" />
                 </LineChart>
               </ResponsiveContainer>
             </div>

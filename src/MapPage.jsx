@@ -126,45 +126,54 @@ const MapPage = ({ onBackToHome }) => {
             
             {selectedLocation ? (
               <div className="mappage-location-details">
-                <h4>{selectedLocation}</h4>
-                {bloomData[selectedLocation] && (
+                <h4>{typeof selectedLocation === 'string' ? selectedLocation : selectedLocation.name}</h4>
+                {bloomData[typeof selectedLocation === 'string' ? selectedLocation : selectedLocation.name] && (
                   <div className="mappage-details-grid">
-                    <div className="mappage-detail-item">
-                      <span className="mappage-detail-label">Bloom Intensity</span>
-                      <span className={`mappage-detail-value intensity-${bloomData[selectedLocation].bloomIntensity.toLowerCase()}`}>
-                        {bloomData[selectedLocation].bloomIntensity}
-                      </span>
-                    </div>
-                    
-                    <div className="mappage-detail-item">
-                      <span className="mappage-detail-label">Peak Season</span>
-                      <span className="mappage-detail-value">{bloomData[selectedLocation].peakSeason}</span>
-                    </div>
-                    
-                    <div className="mappage-detail-item">
-                      <span className="mappage-detail-label">Vegetation Type</span>
-                      <span className="mappage-detail-value">{bloomData[selectedLocation].vegetationType}</span>
-                    </div>
-                    
-                    <div className="mappage-detail-item">
-                      <span className="mappage-detail-label">NDVI Value</span>
-                      <span className="mappage-detail-value ndvi-value">{bloomData[selectedLocation].ndviValue}</span>
-                    </div>
-                    
-                    <div className="mappage-detail-item">
-                      <span className="mappage-detail-label">Coverage</span>
-                      <span className="mappage-detail-value">{bloomData[selectedLocation].coverage}</span>
-                    </div>
-                    
-                    <div className="mappage-detail-item full-width">
-                      <span className="mappage-detail-label">Conservation Status</span>
-                      <span className="mappage-detail-value">{bloomData[selectedLocation].conservation}</span>
-                    </div>
-                    
-                    <div className="mappage-detail-item full-width threats">
-                      <span className="mappage-detail-label">Threats</span>
-                      <span className="mappage-detail-value">{bloomData[selectedLocation].threats}</span>
-                    </div>
+                    {(() => {
+                      const locationName = typeof selectedLocation === 'string' ? selectedLocation : selectedLocation.name;
+                      const locationData = bloomData[locationName];
+                      
+                      return (
+                        <>
+                          <div className="mappage-detail-item">
+                            <span className="mappage-detail-label">Bloom Intensity</span>
+                            <span className={`mappage-detail-value intensity-${locationData.bloomIntensity.toLowerCase()}`}>
+                              {locationData.bloomIntensity}
+                            </span>
+                          </div>
+                          
+                          <div className="mappage-detail-item">
+                            <span className="mappage-detail-label">Peak Season</span>
+                            <span className="mappage-detail-value">{locationData.peakSeason}</span>
+                          </div>
+                          
+                          <div className="mappage-detail-item">
+                            <span className="mappage-detail-label">Vegetation Type</span>
+                            <span className="mappage-detail-value">{locationData.vegetationType}</span>
+                          </div>
+                          
+                          <div className="mappage-detail-item">
+                            <span className="mappage-detail-label">NDVI Value</span>
+                            <span className="mappage-detail-value ndvi-value">{locationData.ndviValue}</span>
+                          </div>
+                          
+                          <div className="mappage-detail-item">
+                            <span className="mappage-detail-label">Coverage</span>
+                            <span className="mappage-detail-value">{locationData.coverage}</span>
+                          </div>
+                          
+                          <div className="mappage-detail-item full-width">
+                            <span className="mappage-detail-label">Conservation Status</span>
+                            <span className="mappage-detail-value">{locationData.conservation}</span>
+                          </div>
+                          
+                          <div className="mappage-detail-item full-width threats">
+                            <span className="mappage-detail-label">Threats</span>
+                            <span className="mappage-detail-value">{locationData.threats}</span>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
                 )}
               </div>
