@@ -5,6 +5,7 @@ import './MapPage.css';
 
 const MapPage = ({ onBackToHome }) => {
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [clickedCoords, setClickedCoords] = useState(null);
   const [mapMode, setMapMode] = useState('satellite');
   const [showInfo, setShowInfo] = useState(true);
   const [showLayers, setShowLayers] = useState(false);
@@ -66,6 +67,19 @@ const MapPage = ({ onBackToHome }) => {
           >
             <Info size={18} />
           </button>
+          {clickedCoords && (
+            <div style={{
+              marginLeft: '0.75rem',
+              padding: '0.5rem 0.75rem',
+              background: 'rgba(44, 85, 48, 0.08)',
+              border: '1px solid var(--accent)',
+              borderRadius: 8,
+              fontSize: '0.9rem',
+              color: 'var(--dark)'
+            }}>
+              Lat: {clickedCoords.lat.toFixed(4)}°, Lon: {clickedCoords.lon.toFixed(4)}°
+            </div>
+          )}
         </div>
       </header>
 
@@ -73,7 +87,15 @@ const MapPage = ({ onBackToHome }) => {
       <div className="mappage-content">
         {/* Map Container */}
         <div className="mappage-map-container">
-          <CesiumMap onLocationSelect={setSelectedLocation} />
+          <CesiumMap
+            onLocationSelect={(loc) => {
+              // Support both entity-based selection and raw coords
+              if (loc && typeof loc.lat === 'number' && typeof loc.lon === 'number') {
+                setClickedCoords({ lat: loc.lat, lon: loc.lon });
+              }
+              setSelectedLocation(loc);
+            }}
+          />
         </div>
 
         {/* Layer Control Panel */}

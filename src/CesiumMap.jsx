@@ -1,5 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Viewer, Cartesian3, Color } from 'cesium';
+import {
+  Viewer,
+  Cartesian3,
+  Color,
+  Cartographic,
+  Math as CesiumMath,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType,
+} from 'cesium';
 import { Search, MapPin } from 'lucide-react';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 
@@ -88,12 +96,13 @@ const CesiumMap = ({ onLocationSelect }) => {
     window.CESIUM_BASE_URL = '/cesium/';
     
     let viewer;
+    let clickHandler;
     try {
       viewer = new Viewer(cesiumContainer.current, {
         terrainProvider: undefined,
         timeline: false,
         animation: false,
-        baseLayerPicker: false,
+        baseLayerPicker: true,
         geocoder: false,
         homeButton: false,
         sceneModePicker: true,
@@ -150,9 +159,57 @@ const CesiumMap = ({ onLocationSelect }) => {
       console.error('Cesium initialization error:', error);
     }
 
+    // Add click interaction: when zoomed out, fly into clicked point and report lat/lon upwards
+    const setupClickHandler = () => {
+      if (!viewer || viewer.isDestroyed()) return;
+      const scene = viewer.scene;
+      const ellipsoid = scene.globe.ellipsoid;
+
+      clickHandler = new ScreenSpaceEventHandler(scene.canvas);
+      clickHandler.setInputAction((movement) => {
+        try {
+          if (!viewer || viewer.isDestroyed()) return;
+
+          // Convert screen click to a point on the ellipsoid
+          const cartesian = viewer.camera.pickEllipsoid(movement.position, ellipsoid);
+          if (!cartesian) return;
+
+          const cartographic = Cartographic.fromCartesian(cartesian);
+          const lat = CesiumMath.toDegrees(cartographic.latitude);
+          const lon = CesiumMath.toDegrees(cartographic.longitude);
+
+          // Current camera height
+          const camHeight = ellipsoid.cartesianToCartographic(viewer.camera.position).height;
+          const FAR_ZOOM = 2_000_000; // 2,000 km
+          const TARGET_HEIGHT = 800_000; // 800 km
+
+          // If currently far, fly closer to the clicked point
+          if (camHeight > FAR_ZOOM) {
+            viewer.scene.camera.flyTo({
+              destination: Cartesian3.fromDegrees(lon, lat, TARGET_HEIGHT),
+              duration: 1.5,
+              maximumHeight: camHeight,
+            });
+          }
+
+          // Notify parent with lat/lon so UI can show it
+          if (onLocationSelect) {
+            onLocationSelect({ name: 'Selected point', lat, lon, zoom: Math.min(camHeight, TARGET_HEIGHT) });
+          }
+        } catch (e) {
+          console.warn('Error handling globe click:', e);
+        }
+      }, ScreenSpaceEventType.LEFT_CLICK);
+    };
+
+    setupClickHandler();
+
     return () => {
       if (viewer && !viewer.isDestroyed()) {
         viewer.destroy();
+      }
+      if (clickHandler && !clickHandler.isDestroyed?.()) {
+        try { clickHandler.destroy(); } catch {}
       }
     };
   }, []);
