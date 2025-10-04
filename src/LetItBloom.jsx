@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Leaf, MapPin, Calendar, TrendingUp, Globe, Sun, Droplets, Wind } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
+import CesiumMap from './CesiumMap';
 import './LetItBloom.css';
 
 
@@ -164,26 +164,7 @@ const LetItBloom = () => {
             {/* Map View */}
             <div className="letitbloom-card letitbloom-map-card">
               <h3 className="letitbloom-card-title"><MapPin className="letitbloom-icon-green" /> Bloom Locations</h3>
-              <div className="letitbloom-map-bg">
-                <div className="letitbloom-map-center">
-                  <div className="letitbloom-map-center-content">
-                    <Globe className="letitbloom-map-globe" />
-                    <p className="letitbloom-map-label">Interactive Earth Map</p>
-                  </div>
-                </div>
-                {/* Bloom Markers */}
-                {bloomLocations.map(loc => (
-                  <button
-                    key={loc.id}
-                    onClick={() => setSelectedRegion(loc)}
-                    className="letitbloom-map-marker"
-                    style={{
-                      left: `${(loc.lon + 180) / 360 * 100}%`,
-                      top: `${(90 - loc.lat) / 180 * 100}%`,
-                    }}
-                  />
-                ))}
-              </div>
+              <CesiumMap />
             </div>
 
             {/* Info Panel */}
