@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Leaf, MapPin, Calendar, TrendingUp, Globe, Sun, Droplets, Wind, ExternalLink } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
+// Removed: BarChart widgets imports
 import MapPage from './MapPage';
 import './LetItBloom.css';
 
@@ -11,7 +11,7 @@ import './LetItBloom.css';
 const LetItBloom = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [showMapPage, setShowMapPage] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState(null);
+  const [selectedRegion, setSelectedRegion] = useState('global');
   const [activeSeason, setActiveSeason] = useState('spring');
   const [floatingElements, setFloatingElements] = useState([]);
   const [selectedYear, setSelectedYear] = useState('2025');
@@ -19,18 +19,72 @@ const LetItBloom = () => {
   const [selectedVegetation, setSelectedVegetation] = useState('All');
   const [timeSlider, setTimeSlider] = useState(4);
   const [mapView, setMapView] = useState('satellite');
+  // Overview/trend state (real data)
+  const [overviewLoading, setOverviewLoading] = useState(true);
+  const [overviewError, setOverviewError] = useState(null);
+  const [overviewStats, setOverviewStats] = useState({
+    activeBloomLocations: null,
+    globalIndexAvg: null,
+    countriesMonitored: null,
+    lastUpdateUtc: null,
+  });
+  const [trendData, setTrendData] = useState(null);
+  // Seasons UI only (removed radar analytics)
 
-  // Mock data for NDVI trends
-  const ndviData = [
-    { month: 'Jan', ndvi: 0.3, evi: 0.25 },
-    { month: 'Feb', ndvi: 0.35, evi: 0.28 },
-    { month: 'Mar', ndvi: 0.5, evi: 0.42 },
-    { month: 'Apr', ndvi: 0.72, evi: 0.65 },
-    { month: 'May', ndvi: 0.85, evi: 0.78 },
-    { month: 'Jun', ndvi: 0.82, evi: 0.75 },
-    { month: 'Jul', ndvi: 0.75, evi: 0.68 },
-    { month: 'Aug', ndvi: 0.65, evi: 0.58 },
-  ];
+  // Predictions & Analytics state
+  const [predLoading, setPredLoading] = useState(true);
+  const [predError, setPredError] = useState(null);
+  const [predictions, setPredictions] = useState({ nextPeak: null, trend: null });
+
+  // Removed: anomalies and regional snapshot widgets state
+
+  // Load overview and trend when filters change (year & region)
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      setOverviewLoading(true);
+      setOverviewError(null);
+      try {
+        const mod = await import('./services/overview');
+        const { computeGlobalOverviewAndTrend } = mod;
+        const { overview, trend } = await computeGlobalOverviewAndTrend({ year: selectedYear, region: selectedRegion });
+        if (!mounted) return;
+        setOverviewStats(overview);
+        setTrendData(trend);
+      } catch (e) {
+        if (!mounted) return;
+        setOverviewError(e?.message || String(e));
+      } finally {
+        if (mounted) setOverviewLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [selectedYear, selectedRegion]);
+
+  // Removed: anomaly and regional snapshot effects
+
+  // Removed seasonal analytics loading (radar chart deleted)
+
+  // Load predictions when year/region changes
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      setPredLoading(true);
+      setPredError(null);
+      try {
+        const { computeBloomPredictions } = await import('./services/predictions');
+        const result = await computeBloomPredictions({ region: selectedRegion, targetYear: Number(selectedYear), yearsBack: 4 });
+        if (!mounted) return;
+        setPredictions(result);
+      } catch (e) {
+        if (!mounted) return;
+        setPredError(e?.message || String(e));
+      } finally {
+        if (mounted) setPredLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [selectedYear, selectedRegion]);
 
   // Mock bloom locations
   const bloomLocations = [
@@ -48,13 +102,23 @@ const LetItBloom = () => {
     winter: { icon: '❄️', gradient: 'linear-gradient(135deg, #93c5fd, #c084fc)', title: 'Winter Rest', desc: 'Southern hemisphere blooms, northern dormancy' },
   };
 
-  // Seasonal radar data
-  const seasonalData = [
-    { season: 'Spring', northern: 95, southern: 45, tropical: 80 },
-    { season: 'Summer', northern: 100, southern: 30, tropical: 85 },
-    { season: 'Autumn', northern: 60, southern: 75, tropical: 75 },
-    { season: 'Winter', northern: 20, southern: 100, tropical: 70 },
-  ];
+  const regionLabel = (code) => {
+    switch (code) {
+      case 'global': return 'Global';
+      case 'north_hemisphere': return 'Northern Hemisphere';
+      case 'tropics': return 'Tropics (20°S–20°N)';
+      case 'south_hemisphere': return 'Southern Hemisphere';
+      case 'north_america': return 'North America';
+      case 'south_america': return 'South America';
+      case 'europe': return 'Europe';
+      case 'africa': return 'Africa';
+      case 'asia': return 'Asia';
+      case 'oceania': return 'Oceania';
+      default: return 'Global';
+    }
+  };
+
+  // Seasonal radar data now computed from POWER via services/seasons.js
 
   useEffect(() => {
     // Generate floating elements for animation
@@ -140,10 +204,35 @@ const LetItBloom = () => {
           <div className="letitbloom-filters">
             <div className="letitbloom-filter-card">
               <Calendar className="letitbloom-icon-green" />
-              <select className="letitbloom-select">
-                <option>2025 Season</option>
-                <option>2024 Season</option>
-                <option>2023 Season</option>
+              <select
+                className="letitbloom-select"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+              >
+                <option value="2025">2025 Season</option>
+                <option value="2024">2024 Season</option>
+                <option value="2023">2023 Season</option>
+                <option value="2022">2022 Season</option>
+                <option value="2021">2021 Season</option>
+              </select>
+            </div>
+            <div className="letitbloom-filter-card">
+              <Globe className="letitbloom-icon-blue" />
+              <select
+                className="letitbloom-select"
+                value={selectedRegion}
+                onChange={(e) => setSelectedRegion(e.target.value)}
+              >
+                <option value="global">Global</option>
+                <option value="north_hemisphere">Northern Hemisphere</option>
+                <option value="tropics">Tropics (20°S–20°N)</option>
+                <option value="south_hemisphere">Southern Hemisphere</option>
+                <option value="north_america">North America</option>
+                <option value="south_america">South America</option>
+                <option value="europe">Europe</option>
+                <option value="africa">Africa</option>
+                <option value="asia">Asia</option>
+                <option value="oceania">Oceania</option>
               </select>
             </div>
             <div className="letitbloom-filter-card">
@@ -203,47 +292,72 @@ const LetItBloom = () => {
           <div className="letitbloom-dashboard-stats">
             <div className="letitbloom-card letitbloom-stats-card">
               <h3 className="letitbloom-card-title">
-                <TrendingUp className="letitbloom-icon-green" /> Global Vegetation Overview
+                <TrendingUp className="letitbloom-icon-green" /> Vegetation Overview — {regionLabel(selectedRegion)}
               </h3>
-              <div className="letitbloom-stats-grid">
-                <div className="letitbloom-stat-item">
-                  <span className="letitbloom-stat-number">4,326</span>
-                  <span className="letitbloom-stat-label">Active Bloom Locations</span>
+              {overviewLoading ? (
+                <div className="letitbloom-stats-grid">
+                  <div className="letitbloom-stat-item"><span className="letitbloom-stat-number">…</span><span className="letitbloom-stat-label">Active Bloom Locations</span></div>
+                  <div className="letitbloom-stat-item"><span className="letitbloom-stat-number">…</span><span className="letitbloom-stat-label">Global Vegetation Avg</span></div>
+                  <div className="letitbloom-stat-item"><span className="letitbloom-stat-number">…</span><span className="letitbloom-stat-label">Countries Monitored</span></div>
+                  <div className="letitbloom-stat-item"><span className="letitbloom-stat-number">…</span><span className="letitbloom-stat-label">Last Update</span></div>
                 </div>
-                <div className="letitbloom-stat-item">
-                  <span className="letitbloom-stat-number">0.68</span>
-                  <span className="letitbloom-stat-label">Global NDVI Average</span>
+              ) : overviewError ? (
+                <div style={{ padding: '0.75rem', color: 'var(--danger)' }}>Error loading overview: {overviewError}</div>
+              ) : (
+                <div className="letitbloom-stats-grid">
+                  <div className="letitbloom-stat-item">
+                    <span className="letitbloom-stat-number">{overviewStats.activeBloomLocations ?? '—'}</span>
+                    <span className="letitbloom-stat-label">Active Bloom Locations</span>
+                  </div>
+                  <div className="letitbloom-stat-item">
+                    <span className="letitbloom-stat-number">{overviewStats.globalIndexAvg!=null ? overviewStats.globalIndexAvg.toFixed(2) : '—'}</span>
+                    <span className="letitbloom-stat-label">Global Vegetation Avg</span>
+                  </div>
+                  <div className="letitbloom-stat-item">
+                    <span className="letitbloom-stat-number">{overviewStats.countriesMonitored ?? '—'}</span>
+                    <span className="letitbloom-stat-label">Countries Monitored</span>
+                  </div>
+                  <div className="letitbloom-stat-item">
+                    <span className="letitbloom-stat-number">{overviewStats.lastUpdateUtc ? new Date(overviewStats.lastUpdateUtc).toISOString().slice(0,10) : '—'}</span>
+                    <span className="letitbloom-stat-label">Last Update (UTC)</span>
+                  </div>
+                  {overviewStats?.diagnostics && (
+                    <div className="letitbloom-stat-item" style={{ gridColumn: 'span 4', opacity: 0.75 }}>
+                      <span className="letitbloom-stat-label">
+                        Data coverage: {overviewStats.diagnostics.pointsValid}/{overviewStats.diagnostics.pointsRequested} points
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <div className="letitbloom-stat-item">
-                  <span className="letitbloom-stat-number">156</span>
-                  <span className="letitbloom-stat-label">Countries Monitored</span>
-                </div>
-                <div className="letitbloom-stat-item">
-                  <span className="letitbloom-stat-number">24/7</span>
-                  <span className="letitbloom-stat-label">Real-time Monitoring</span>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* NDVI Trend Chart */}
             <div className="letitbloom-card letitbloom-trend-card">
-              <h3 className="letitbloom-card-title"><TrendingUp className="letitbloom-icon-green" /> Global Vegetation Trend 2025</h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <LineChart data={ndviData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="ndvi" stroke="#2E8B57" strokeWidth={3} name="NDVI Index" />
-                  <Line type="monotone" dataKey="evi" stroke="#FF7BAC" strokeWidth={2} name="EVI Index" />
-                </LineChart>
-              </ResponsiveContainer>
+              <h3 className="letitbloom-card-title"><TrendingUp className="letitbloom-icon-green" /> Vegetation Trend {selectedYear} — {regionLabel(selectedRegion)}</h3>
+              {overviewLoading ? (
+                <div style={{ padding: '1rem', opacity: .8 }}>Loading trend…</div>
+              ) : overviewError ? (
+                <div style={{ padding: '1rem', color: 'var(--danger)' }}>Could not load trend.</div>
+              ) : (
+                <ResponsiveContainer width="100%" height={250}>
+                  <LineChart data={trendData || []} key={`trend-${selectedYear}-${selectedRegion}`}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis domain={[0, 1]} />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="ndvi" stroke="#2E8B57" strokeWidth={3} name="Vegetation Index" />
+                    <Line type="monotone" dataKey="evi" stroke="#FF7BAC" strokeWidth={2} name="EVI (proxy)" />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
             </div>
+            {/* Removed: Global Vegetation Gauge, Anomaly badges, and Regional Snapshot (bars) */}
           </div>
         </div>
       </section>
 
-      {/* Seasons Section */}
+      {/* Seasons Section (kept UI cards, removed radar chart) */}
   <section className="letitbloom-section letitbloom-seasons-bg">
   <div className="letitbloom-container">
           <h2 className="letitbloom-title">Blooming Through the Seasons</h2>
@@ -255,31 +369,13 @@ const LetItBloom = () => {
                 key={key}
                 onClick={() => setActiveSeason(key)}
                 className={`letitbloom-season-card${activeSeason === key ? ' letitbloom-season-card-active' : ''}`}
-                style={{
-                  background: season.gradient
-                }}
+                style={{ background: season.gradient }}
               >
                 <div className="text-6xl mb-3">{season.icon}</div>
                 <h3 className="letitbloom-season-title">{season.title}</h3>
                 <p className="letitbloom-season-desc">{season.desc}</p>
               </button>
             ))}
-          </div>
-
-          {/* Seasonal Radar Chart */}
-          <div className="letitbloom-card letitbloom-radar-card">
-            <h3 className="letitbloom-card-title letitbloom-center">Hemisphere Bloom Activity</h3>
-            <ResponsiveContainer width="100%" height={400}>
-              <RadarChart data={seasonalData}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="season" />
-                <PolarRadiusAxis angle={90} domain={[0, 100]} />
-                <Radar name="Northern" dataKey="northern" stroke="#2E8B57" fill="#2E8B57" fillOpacity={0.6} />
-                <Radar name="Southern" dataKey="southern" stroke="#FF7BAC" fill="#FF7BAC" fillOpacity={0.6} />
-                <Radar name="Tropical" dataKey="tropical" stroke="#FFD166" fill="#FFD166" fillOpacity={0.6} />
-                <Tooltip />
-              </RadarChart>
-            </ResponsiveContainer>
           </div>
         </div>
       </section>
@@ -326,15 +422,44 @@ const LetItBloom = () => {
 
           <div className="letitbloom-prediction-grid">
             <div className="letitbloom-card letitbloom-prediction-card letitbloom-prediction-card-green">
-              <h3 className="text-2xl font-bold mb-4">Next Peak Bloom</h3>
-              <p className="text-5xl font-bold mb-4">May 2026</p>
-              <p className="text-lg opacity-90">Amazon Basin - Expected high intensity flowering season based on 15-year MODIS data analysis.</p>
+              <h3 className="text-2xl font-bold mb-4">Next Peak Bloom — {regionLabel(selectedRegion)}</h3>
+              {predLoading ? (
+                <p className="text-3xl font-bold mb-4">Calculating…</p>
+              ) : predError ? (
+                <p className="text-red-600">Failed to compute: {predError}</p>
+              ) : predictions.nextPeak ? (
+                <>
+                  <p className="text-5xl font-bold mb-4">{predictions.nextPeak.monthLabel} {predictions.nextPeak.year}</p>
+                  <p className="text-lg opacity-90">Estimated using a satellite-derived environmental proxy and a 4-year baseline.</p>
+                </>
+              ) : (
+                <p>—</p>
+              )}
             </div>
 
             <div className="letitbloom-card letitbloom-prediction-card letitbloom-prediction-card-pink">
-              <h3 className="text-2xl font-bold mb-4">Trend Analysis</h3>
-              <p className="text-5xl font-bold mb-4">8% Earlier</p>
-              <p className="text-lg opacity-90">Global flowering events occurring earlier compared to 10-year average, indicating climate shift patterns.</p>
+              <h3 className="text-2xl font-bold mb-4">Trend Analysis — {regionLabel(selectedRegion)}</h3>
+              {predLoading ? (
+                <p className="text-3xl font-bold mb-4">Processing…</p>
+              ) : predError ? (
+                <p className="text-red-600">—</p>
+              ) : predictions.trend ? (
+                <>
+                  <p className="text-5xl font-bold mb-2">
+                    {predictions.trend.shiftLabel}
+                  </p>
+                  <p className="text-lg opacity-90">
+                    {typeof predictions.trend.intensityChangePercent === 'number'
+                      ? `${predictions.trend.intensityChangePercent >= 0 ? '+' : ''}${predictions.trend.intensityChangePercent.toFixed(1)}% intensity vs baseline`
+                      : '—'}
+                  </p>
+                  {typeof predictions.trend.confidence === 'number' && (
+                    <p className="text-sm opacity-80 mt-1">Confidence in peak timing: {(predictions.trend.confidence * 100).toFixed(0)}%</p>
+                  )}
+                </>
+              ) : (
+                <p>—</p>
+              )}
             </div>
           </div>
         </div>

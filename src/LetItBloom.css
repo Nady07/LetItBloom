@@ -240,7 +240,8 @@
 .cesium-search-container {
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000;
   width: 320px;
 }
@@ -403,15 +404,17 @@
   
   .cesium-search-container {
     width: calc(100vw - 40px);
-    left: 20px;
-    right: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
   }
   
   /* Fullscreen search container for mobile */
   .cesium-widget:fullscreen .cesium-search-container {
     width: calc(100vw - 40px) !important;
-    left: 20px !important;
-    right: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    right: auto !important;
   }
 }
 
@@ -440,7 +443,8 @@
   position: fixed !important;
   z-index: 10000 !important;
   top: 20px !important;
-  left: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
 }
 
 /* Fullscreen viewer styling */
