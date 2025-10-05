@@ -7,18 +7,52 @@ import {
   Math as CesiumMath,
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
+  WebMapTileServiceImageryProvider,
+  OpenStreetMapImageryProvider,
+  GeoJsonDataSource,
+  JulianDate,
+  ArcType
 } from 'cesium';
 import { Search, MapPin } from 'lucide-react';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 
-const CesiumMap = ({ onLocationSelect }) => {
+const GIBS_ENDPOINT = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi';
+const GIBS_PRODUCTS = {
+  viirs: {
+    label: 'VIIRS TrueColor',
+    layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
+    tileMatrixSetID: 'GoogleMapsCompatible_Level9',
+    style: 'default',
+    format: 'image/jpeg',
+    maxLevel: 9,
+    type: 'truecolor'
+  },
+  evi8: {
+    label: 'MODIS EVI (8-day)',
+    layer: 'MODIS_Terra_EVI_8Day',
+    tileMatrixSetID: 'GoogleMapsCompatible_Level9',
+    style: 'default',
+    format: 'image/png',
+    maxLevel: 9,
+    type: 'index'
+  }
+};
+
+const CesiumMap = ({ onLocationSelect, baseLayer = 'viirs', showCountryBorders = true }) => {
+  // force fallback if incoming baseLayer is not supported anymore
+  const effectiveBase = GIBS_PRODUCTS[baseLayer] ? baseLayer : 'viirs';
+
   const cesiumContainer = useRef(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [currentDateStr, setCurrentDateStr] = useState('');
   const viewerRef = useRef(null);
+  const bordersDataSourceRef = useRef(null);
+  const hoverHighlightRef = useRef(null);
+  const imageryLayerRef = useRef(null);
 
-  // Database of countries with coordinates
+  // Database of countries with coordinates (subset)
   const countries = {
     'Argentina': { lat: -38.4161, lon: -63.6167, zoom: 5000000 },
     'Australia': { lat: -25.2744, lon: 133.7751, zoom: 7000000 },
@@ -52,59 +86,85 @@ const CesiumMap = ({ onLocationSelect }) => {
     'Iceland': { lat: 64.9631, lon: -19.0208, zoom: 1500000 }
   };
 
-  const handleSearch = (value) => {
-    setSearchTerm(value);
-    if (value.length > 0) {
-      const filtered = Object.keys(countries).filter(country =>
-        country.toLowerCase().includes(value.toLowerCase())
-      ).slice(0, 5);
-      setSuggestions(filtered);
-    } else {
-      setSuggestions([]);
-    }
+  // Helper: get most recent date string (YYYY-MM-DD)
+  const computeRecentDate = () => {
+    const now = new Date();
+    // GIBS suele tener un retardo de ~1 día; tomamos hoy-1
+    const d = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const yyyy = d.getUTCFullYear();
+    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(d.getUTCDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
   };
 
-  const flyToCountry = (countryName) => {
-    const country = countries[countryName];
-    if (country && viewerRef.current && !viewerRef.current.isDestroyed()) {
-      setIsSearching(true);
-      viewerRef.current.scene.camera.flyTo({
-        destination: Cartesian3.fromDegrees(country.lon, country.lat, country.zoom),
-        duration: 2.0,
-        complete: () => {
-          setIsSearching(false);
-          if (onLocationSelect) {
-            onLocationSelect({
-              name: countryName,
-              lat: country.lat,
-              lon: country.lon,
-              zoom: country.zoom
-            });
-          }
-        },
-        cancel: () => {
-          setIsSearching(false);
-        }
-      });
-      setSearchTerm(countryName);
-      setSuggestions([]);
+  // Build GIBS provider for a given product id
+  const buildGibsProvider = (productKey, dateStr) => {
+    const prod = GIBS_PRODUCTS[productKey] || GIBS_PRODUCTS.viirs;
+    return new WebMapTileServiceImageryProvider({
+      url: GIBS_ENDPOINT,
+      layer: prod.layer,
+      style: prod.style,
+      format: prod.format,
+      tileMatrixSetID: prod.tileMatrixSetID,
+      maximumLevel: prod.maxLevel,
+      tileWidth: 256,
+      tileHeight: 256,
+      credit: 'NASA GIBS',
+      // Many 8-day composites require exact dates; omit TIME to get latest for index layers
+      dimensions: (productKey === 'viirs' && dateStr) ? { time: dateStr } : undefined,
+    });
+  };
+
+  // Swap base imagery layer
+  const setBaseImagery = (viewer, key, dateStr) => {
+    try {
+      const newProvider = buildGibsProvider(key, dateStr);
+      // Place above OSM fallback (index 1)
+      const newLayer = viewer.imageryLayers.addImageryProvider(newProvider, 1);
+      newLayer.alpha = 1.0;
+      newLayer.brightness = 1.0;
+      // If provider throws tile errors (e.g., 400 on TIME), fallback to provider without TIME
+      try {
+        newProvider.errorEvent?.addEventListener(() => {
+          try {
+            viewer.imageryLayers.remove(newLayer, true);
+          } catch {}
+          const fallbackProvider = buildGibsProvider(key, undefined);
+          const fallbackLayer = viewer.imageryLayers.addImageryProvider(fallbackProvider, 1);
+          imageryLayerRef.current = fallbackLayer;
+          // Mark badge as latest
+          setCurrentDateStr('latest');
+        });
+      } catch {}
+      if (imageryLayerRef.current && !viewer.isDestroyed()) {
+        try { viewer.imageryLayers.remove(imageryLayerRef.current, true); } catch {}
+      }
+      imageryLayerRef.current = newLayer;
+    } catch (e) {
+      console.warn('Error setting base imagery, keeping OSM fallback visible.', e);
     }
   };
 
   useEffect(() => {
-    // Set Cesium base URL to the copied assets
-    window.CESIUM_BASE_URL = '/cesium/';
-    
+    // Ensure Cesium assets path is set at runtime for Workers/Widgets
+    try {
+      if (!window.CESIUM_BASE_URL) {
+        window.CESIUM_BASE_URL = '/cesium/';
+      }
+    } catch {}
+
     let viewer;
     let clickHandler;
+    let moveHandler;
+
     try {
       viewer = new Viewer(cesiumContainer.current, {
         terrainProvider: undefined,
         timeline: false,
         animation: false,
-        baseLayerPicker: true,
+        baseLayerPicker: false,
         geocoder: false,
-        homeButton: false,
+        homeButton: true,
         sceneModePicker: true,
         navigationHelpButton: true,
         infoBox: true,
@@ -113,23 +173,36 @@ const CesiumMap = ({ onLocationSelect }) => {
         vrButton: false,
         creditContainer: document.createElement('div')
       });
-      
-      // Store viewer reference
+
       viewerRef.current = viewer;
-      
-      // Set initial view
+
+      // Initial camera
       viewer.scene.camera.setView({
-        destination: Cartesian3.fromDegrees(0, 0, 20000000)
+        destination: Cartesian3.fromDegrees(0, 10, 16000000)
       });
-      
-      // Add bloom location markers
+
+      // Remove any default imagery
+      try {
+        const layers = viewer.imageryLayers;
+        while (layers.length > 0) {
+          layers.remove(layers.get(0), true);
+        }
+        const osm = new OpenStreetMapImageryProvider({ url: 'https://tile.openstreetmap.org/' });
+        layers.addImageryProvider(osm, 0);
+      } catch {}
+
+      // Set initial GIBS imagery
+      const dateStr = computeRecentDate();
+      setCurrentDateStr(dateStr);
+      setBaseImagery(viewer, baseLayer, dateStr);
+
+      // Add bloom sample markers (existing)
       const bloomLocations = [
         { name: 'Amazon Rainforest', lat: -3.4653, lon: -62.2159, color: Color.HOTPINK },
         { name: 'Great Plains, USA', lat: 41.1, lon: -100.5, color: Color.GOLD },
         { name: 'Mediterranean Coast', lat: 43.3, lon: 5.4, color: Color.HOTPINK },
         { name: 'Sub-Saharan Africa', lat: 9.0, lon: 8.6, color: Color.SEAGREEN },
       ];
-      
       bloomLocations.forEach(location => {
         viewer.entities.add({
           position: Cartesian3.fromDegrees(location.lon, location.lat),
@@ -138,7 +211,6 @@ const CesiumMap = ({ onLocationSelect }) => {
             color: location.color,
             outlineColor: Color.WHITE,
             outlineWidth: 3,
-            heightReference: 1,
           },
           label: {
             text: location.name,
@@ -154,36 +226,61 @@ const CesiumMap = ({ onLocationSelect }) => {
           }
         });
       });
-      
-    } catch (error) {
-      console.error('Cesium initialization error:', error);
-    }
 
-    // Add click interaction: when zoomed out, fly into clicked point and report lat/lon upwards
-    const setupClickHandler = () => {
-      if (!viewer || viewer.isDestroyed()) return;
+      // Click handler (entities first, else globe lat/lon)
       const scene = viewer.scene;
       const ellipsoid = scene.globe.ellipsoid;
 
       clickHandler = new ScreenSpaceEventHandler(scene.canvas);
       clickHandler.setInputAction((movement) => {
         try {
-          if (!viewer || viewer.isDestroyed()) return;
+          // 1) Try picking an entity (e.g., country polygon)
+          const picked = scene.pick(movement.position);
+          if (picked && picked.id && picked.id.polygon) {
+            const entity = picked.id;
+            viewer.flyTo(entity, { duration: 1.7 });
+            const name = entity.properties?.name?.getValue?.() || entity.name || 'Country';
+            // Prefer exact click position lat/lon (more representativo); fallback a centroide
+            let lat, lon;
+            try {
+              const cartesian = viewer.camera.pickEllipsoid(movement.position, ellipsoid);
+              if (cartesian) {
+                const cartographic = Cartographic.fromCartesian(cartesian);
+                lat = CesiumMath.toDegrees(cartographic.latitude);
+                lon = CesiumMath.toDegrees(cartographic.longitude);
+              }
+            } catch {}
+            if (lat == null || lon == null) {
+              try {
+                const h = entity.polygon.hierarchy?.getValue?.(JulianDate.now());
+                const positions = h?.positions;
+                if (positions && positions.length >= 3) {
+                  let sumLat = 0, sumLon = 0;
+                  for (const p of positions) {
+                    const c = Cartographic.fromCartesian(p);
+                    sumLat += CesiumMath.toDegrees(c.latitude);
+                    sumLon += CesiumMath.toDegrees(c.longitude);
+                  }
+                  lat = sumLat / positions.length;
+                  lon = sumLon / positions.length;
+                }
+              } catch {}
+            }
+            if (onLocationSelect) {
+              onLocationSelect({ name, lat, lon });
+            }
+            return;
+          }
 
-          // Convert screen click to a point on the ellipsoid
+          // 2) Otherwise, treat as globe click and compute lat/lon
           const cartesian = viewer.camera.pickEllipsoid(movement.position, ellipsoid);
           if (!cartesian) return;
-
           const cartographic = Cartographic.fromCartesian(cartesian);
           const lat = CesiumMath.toDegrees(cartographic.latitude);
           const lon = CesiumMath.toDegrees(cartographic.longitude);
-
-          // Current camera height
           const camHeight = ellipsoid.cartesianToCartographic(viewer.camera.position).height;
-          const FAR_ZOOM = 2_000_000; // 2,000 km
-          const TARGET_HEIGHT = 800_000; // 800 km
-
-          // If currently far, fly closer to the clicked point
+          const FAR_ZOOM = 2_000_000;
+          const TARGET_HEIGHT = 800_000;
           if (camHeight > FAR_ZOOM) {
             viewer.scene.camera.flyTo({
               destination: Cartesian3.fromDegrees(lon, lat, TARGET_HEIGHT),
@@ -191,32 +288,144 @@ const CesiumMap = ({ onLocationSelect }) => {
               maximumHeight: camHeight,
             });
           }
-
-          // Notify parent with lat/lon so UI can show it
           if (onLocationSelect) {
             onLocationSelect({ name: 'Selected point', lat, lon, zoom: Math.min(camHeight, TARGET_HEIGHT) });
           }
-        } catch (e) {
-          console.warn('Error handling globe click:', e);
-        }
+        } catch (e) { console.warn('Error handling click:', e); }
       }, ScreenSpaceEventType.LEFT_CLICK);
-    };
 
-    setupClickHandler();
+      // Load Natural Earth borders (multi-source with fallback)
+      const loadBorders = async () => {
+        const sources = [
+          'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson',
+          'https://cdn.jsdelivr.net/npm/@geo-maps/countries-50m@1/geojson/countries.geo.json',
+          '/data/ne_countries_50m.min.geojson'
+        ];
+        let ds = null;
+        for (const url of sources) {
+          try {
+            ds = await GeoJsonDataSource.load(url, {
+              // Avoid stroke/outline to prevent expensive polygon outline geometry
+              fill: Color.fromCssColorString('rgba(46,139,87,0.08)'),
+              clampToGround: false,
+            });
+            break;
+          } catch (e) {
+            console.warn('Border source failed, trying next:', url, e);
+          }
+        }
+        if (!ds) {
+          console.warn('No borders dataset could be loaded.');
+          return;
+        }
+        bordersDataSourceRef.current = ds;
+        try {
+          ds.entities.values.forEach((ent) => {
+            if (!ent.polygon) return;
+            const props = ent.properties;
+            const name = (props?.ADMIN?.getValue?.())
+              || (props?.NAME?.getValue?.())
+              || (props?.NAME_LONG?.getValue?.())
+              || (props?.name?.getValue?.())
+              || (props?.NAME_EN?.getValue?.())
+              || ent.name
+              || 'Country';
+            ent.name = name;
+            ent.description = `
+              <div style="font-family: system-ui, sans-serif; font-size: 14px;">
+                <strong>Country:</strong> ${name}
+                <div style="opacity:.8; margin-top:6px;">Click to fly to this country</div>
+              </div>`;
+            // Disable outlines to avoid worker crashes; use geodesic arcs and reduce subdivisions
+            ent.polygon.outline = false;
+            ent.polygon.material = Color.fromCssColorString('rgba(46,139,87,0.08)');
+            ent.polygon.arcType = ArcType.GEODESIC;
+            ent.polygon.granularity = CesiumMath.RADIANS_PER_DEGREE; // fewer segments
+
+            // Guard against invalid/degenerate rings
+            try {
+              const h = ent.polygon.hierarchy?.getValue?.(JulianDate.now());
+              const positions = h?.positions;
+              if (!positions || positions.length < 3) {
+                ent.show = false;
+              }
+            } catch {}
+          });
+        } catch {}
+        if (showCountryBorders) {
+          try { viewer.dataSources.add(ds); } catch {}
+        }
+      };
+      loadBorders();
+
+      // Hover highlight via mouse move
+      moveHandler = new ScreenSpaceEventHandler(scene.canvas);
+      moveHandler.setInputAction((movement) => {
+        try {
+          const picked = scene.pick(movement.endPosition);
+          // Reset previous
+          if (hoverHighlightRef.current && hoverHighlightRef.current.polygon) {
+            hoverHighlightRef.current.polygon.material = Color.fromCssColorString('rgba(46,139,87,0.08)');
+            hoverHighlightRef.current.polygon.outlineColor = Color.fromCssColorString('rgba(255,255,255,0.85)');
+          }
+          hoverHighlightRef.current = null;
+          if (picked && picked.id && picked.id.polygon) {
+            hoverHighlightRef.current = picked.id;
+            picked.id.polygon.material = Color.fromCssColorString('rgba(255,215,0,0.25)');
+            picked.id.polygon.outlineColor = Color.GOLD;
+            try { viewer.container.style.cursor = 'pointer'; } catch {}
+          } else {
+            try { viewer.container.style.cursor = 'default'; } catch {}
+          }
+        } catch {}
+      }, ScreenSpaceEventType.MOUSE_MOVE);
+
+      // (Removed duplicate LEFT_CLICK binding; merged above)
+
+    } catch (error) {
+      console.error('Cesium initialization error:', error);
+    }
 
     return () => {
       if (viewer && !viewer.isDestroyed()) {
-        viewer.destroy();
+        try { viewer.destroy(); } catch {}
       }
       if (clickHandler && !clickHandler.isDestroyed?.()) {
         try { clickHandler.destroy(); } catch {}
       }
+      if (moveHandler && !moveHandler.isDestroyed?.()) {
+        try { moveHandler.destroy(); } catch {}
+      }
     };
   }, []);
 
+  // React to baseLayer changes
+  useEffect(() => {
+    if (!viewerRef.current || viewerRef.current.isDestroyed()) return;
+    const dateStr = currentDateStr || computeRecentDate();
+    setBaseImagery(viewerRef.current, effectiveBase, dateStr);
+  }, [baseLayer]);
+
+  // React to showCountryBorders toggle
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    const ds = bordersDataSourceRef.current;
+    if (!viewer || !ds) return;
+    try {
+      if (showCountryBorders) {
+        if (!viewer.dataSources.contains(ds)) viewer.dataSources.add(ds);
+      } else {
+        if (viewer.dataSources.contains(ds)) viewer.dataSources.remove(ds, false);
+      }
+    } catch {}
+  }, [showCountryBorders]);
+
+  const activeProduct = GIBS_PRODUCTS[effectiveBase] || GIBS_PRODUCTS.viirs;
+  const showLegend = activeProduct.type === 'index';
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* Country Search Bar */}
+      {/* Search bar */}
       <div className="cesium-search-container">
         <div className="cesium-search-input-wrapper">
           <Search className="cesium-search-icon" size={20} />
@@ -236,8 +445,6 @@ const CesiumMap = ({ onLocationSelect }) => {
             <div className="cesium-search-loading">🌍</div>
           )}
         </div>
-        
-        {/* Search Suggestions */}
         {suggestions.length > 0 && (
           <div className="cesium-search-suggestions">
             {suggestions.map((country) => (
@@ -253,8 +460,26 @@ const CesiumMap = ({ onLocationSelect }) => {
           </div>
         )}
       </div>
-      
-      {/* Cesium Map Container */}
+
+      {/* Active layer badge */}
+      {currentDateStr && (
+        <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(0,0,0,0.55)', color: '#fff', padding: '6px 10px', borderRadius: 8, fontSize: 12 }}>
+          NASA GIBS: {currentDateStr} · {activeProduct.label}
+        </div>
+      )}
+      {showLegend && (
+        <div style={{ position: 'absolute', bottom: 12, right: 12, background: 'rgba(0,0,0,0.55)', color: '#fff', padding: '8px 10px', borderRadius: 8, fontSize: 12, maxWidth: 240 }}>
+          <div style={{ fontWeight: 700, marginBottom: 6 }}>{activeProduct.label}</div>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 4 }}>
+            <span>Bajo</span>
+            <div style={{ width: 120, height: 10, background: 'linear-gradient(90deg,#8B4513,#F1C232,#92D050,#006400)' }} />
+            <span>Alto</span>
+          </div>
+          <div style={{ opacity: 0.9, marginTop: 6 }}>Índice de vegetación (EVI)</div>
+        </div>
+      )}
+
+      {/* Map container */}
       <div ref={cesiumContainer} style={{ width: '100%', height: '100%' }} />
     </div>
   );
