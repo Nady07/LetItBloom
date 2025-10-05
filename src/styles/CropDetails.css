@@ -1,0 +1,107 @@
+.crop-details {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.crop-section-title {
+  color: var(--leaf-green);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(46, 139, 87, 0.2);
+}
+
+.crops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.crop-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.crop-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.crop-name {
+  color: var(--sun-yellow);
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.crop-type {
+  font-size: 0.9rem;
+  color: var(--sky-blue);
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(135, 206, 235, 0.1);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.crop-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.crop-detail {
+  font-size: 0.9rem;
+}
+
+.detail-label {
+  color: var(--gray-400);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.detail-value {
+  color: var(--gray-200);
+}
+
+.crop-description {
+  font-size: 0.9rem;
+  color: var(--gray-300);
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+.additional-info {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-item {
+  margin-bottom: 0.75rem;
+}
+
+.info-label {
+  color: var(--leaf-green);
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+}
+
+.info-value {
+  color: var(--gray-200);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .crops-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .crop-card {
+    padding: 0.75rem;
+  }
+}

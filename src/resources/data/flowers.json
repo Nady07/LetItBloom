@@ -1,0 +1,543 @@
+{
+  "flowers": [
+    {
+      "id": "ceibo-argentina",
+      "name": "Ceibo",
+      "scientificName": "Erythrina crista-galli",
+      "country": "Argentina",
+      "type": "National Flower",
+      "imageUrl": "/src/resources/1024px-Erythrina_crista-galli_(Ceibo)_Inflorescence.jpeg",
+      "description": "El Ceibo es la flor nacional de Argentina. Es un árbol que produce hermosas flores rojas en forma de cresta. La flor simboliza la fuerza y la resistencia, características propias del pueblo argentino.",
+      "characteristics": {
+        "color": "Rojo",
+        "height": "5-10 metros (árbol)",
+        "bloomingSeason": "Primavera-Verano",
+        "habitat": "Zonas húmedas y ribereñas"
+      }
+    },
+    {
+      "id": "acacia-australia",
+      "name": "Acacia Dorada",
+      "scientificName": "Acacia pycnantha",
+      "country": "Australia",
+      "type": "National Flower",
+      "imageUrl": "/src/resources/acaciaDorada_Australia.jpg",
+      "description": "La Acacia Dorada es la flor nacional de Australia. Es conocida por sus flores esféricas de color amarillo dorado brillante. Representa la unidad y resistencia del pueblo australiano.",
+      "characteristics": {
+        "color": "Amarillo dorado",
+        "height": "4-8 metros",
+        "bloomingSeason": "Final del invierno - principios de primavera",
+        "habitat": "Bosques y matorrales"
+      }
+    },
+    {
+      "id": "kantuta-bolivia",
+      "name": "Kantuta",
+      "scientificName": "Cantua buxifolia",
+      "country": "Bolivia",
+      "type": "National Flower",
+      "imageUrl": "/src/resources/1024px-Kantutas_Cuzco.jpg_Bolivia.jpg",
+      "description": "La Kantuta es la flor nacional de Bolivia. Sus colores rojo, amarillo y verde coinciden con los de la bandera boliviana. Es considerada sagrada desde tiempos incaicos.",
+      "characteristics": {
+        "color": "Rojo, amarillo y verde",
+        "height": "2-3 metros",
+        "bloomingSeason": "Todo el año",
+        "habitat": "Regiones andinas"
+      }
+    },
+    {
+      "id": "orquidea-cattleya-venezuela",
+      "name": "Flor de Mayo",
+      "scientificName": "Cattleya mossiae",
+      "country": "Venezuela",
+      "type": "National Flower",
+      "description": "La Flor de Mayo es la orquídea nacional de Venezuela. Es una especie de orquídea que produce grandes flores de color rosa-lavanda. Es apreciada por su belleza y fragancia.",
+      "characteristics": {
+        "color": "Rosa-lavanda",
+        "height": "40-60 cm",
+        "bloomingSeason": "Primavera",
+        "habitat": "Bosques nublados"
+      }
+    },
+    {
+      "id": "dalia-mexico",
+      "name": "Dalia",
+      "scientificName": "Dahlia coccinea",
+      "country": "México",
+      "type": "National Flower",
+      "imageUrl": "/src/resources/Dalia_Mexico.jpg",
+      "description": "La Dalia es la flor nacional de México. Originaria de este país, existe en una gran variedad de colores y formas. Simboliza la diversidad y riqueza cultural mexicana.",
+      "characteristics": {
+        "color": "Variado (rojo, rosa, amarillo, blanco)",
+        "height": "60-120 cm",
+        "bloomingSeason": "Verano-Otoño",
+        "habitat": "Jardines y áreas cultivadas"
+      }
+    },
+    {
+      "id": "iris-francia",
+      "name": "Flor de Lis",
+      "scientificName": "Iris",
+      "country": "Francia",
+      "type": "National Flower",
+      "description": "La Flor de Lis es un símbolo histórico de Francia. Aunque técnicamente es un emblema heráldico más que una flor natural, el iris ha sido adoptado como la flor nacional francesa.",
+      "characteristics": {
+        "color": "Púrpura, azul",
+        "height": "30-90 cm",
+        "bloomingSeason": "Primavera",
+        "habitat": "Jardines y áreas naturales"
+      }
+    },
+    {
+      "id": "crisantemo-japon",
+      "name": "Crisantemo",
+      "scientificName": "Chrysanthemum",
+      "country": "Japón",
+      "type": "National Flower",
+      "description": "El Crisantemo es la flor nacional de Japón y símbolo de la familia imperial japonesa. Representa la longevidad, dignidad y nobleza.",
+      "characteristics": {
+        "color": "Variado (blanco, amarillo, rojo)",
+        "height": "30-90 cm",
+        "bloomingSeason": "Otoño",
+        "habitat": "Jardines ornamentales"
+      }
+    }
+  ,
+    {
+      "id": "lotus-india",
+      "name": "Loto",
+      "scientificName": "Nelumbo nucifera",
+      "description": "El Loto es una flor acuática sagrada en muchas culturas asiáticas. Es símbolo de pureza, iluminación y renacimiento en el hinduismo y budismo.",
+      "characteristics": {
+        "color": "Rosa, blanco",
+        "height": "50-150 cm sobre el agua",
+        "bloomingSeason": "Verano",
+        "habitat": "Aguas tranquilas y estanques"
+      }
+    },
+    {
+      "id": "heliconia-tropical",
+      "name": "Heliconia",
+      "scientificName": "Heliconia rostrata",
+      "description": "La Heliconia es una planta tropical conocida por sus coloridas brácteas colgantes que asemejan el pico de un loro. Es común en regiones tropicales de América.",
+      "characteristics": {
+        "color": "Rojo, amarillo",
+        "height": "1-5 metros",
+        "bloomingSeason": "Todo el año en climas tropicales",
+        "habitat": "Bosques tropicales húmedos"
+      }
+    },
+    {
+      "id": "margarita-comun",
+      "name": "Margarita",
+      "scientificName": "Bellis perennis",
+      "description": "La margarita común es una flor silvestre muy conocida y apreciada. Es símbolo de inocencia y amor puro.",
+      "characteristics": {
+        "color": "Blanco con centro amarillo",
+        "height": "10-20 cm",
+        "bloomingSeason": "Primavera-Verano",
+        "habitat": "Praderas y jardines"
+      }
+    },
+    {
+      "id": "lycaste-skinneri",
+      "name": "Orquídea Lycaste",
+      "scientificName": "Lycaste skinneri",
+      "description": "Una orquídea conocida por sus grandes flores triangulares y su belleza excepcional. Es muy apreciada por coleccionistas.",
+      "characteristics": {
+        "color": "Rosa, blanco",
+        "height": "30-45 cm",
+        "bloomingSeason": "Invierno-Primavera",
+        "habitat": "Bosques nublados"
+      }
+    },
+    {
+      "id": "coffea-arabica",
+      "name": "Flor del Café",
+      "scientificName": "Coffea arabica",
+      "description": "Las flores del café son pequeñas, blancas y fragantes. Son cruciales para la producción de café, uno de los cultivos más importantes del mundo.",
+      "characteristics": {
+        "color": "Blanco",
+        "height": "2-4 metros (arbusto)",
+        "bloomingSeason": "Después de las lluvias",
+        "habitat": "Regiones tropicales y subtropicales"
+      }
+    },
+    {
+      "id": "cornflower-alemania",
+      "name": "Aciano",
+      "scientificName": "Centaurea cyanus",
+      "country": "Alemania",
+      "type": "National Flower",
+      "description": "El aciano o azulejo es la flor nacional de Alemania. Es conocida por su distintivo color azul y su asociación histórica con la cultura alemana.",
+      "characteristics": {
+        "color": "Azul",
+        "height": "30-80 cm",
+        "bloomingSeason": "Verano",
+        "habitat": "Campos y praderas"
+      }
+    },
+    {
+      "id": "cardo-escocia",
+      "name": "Cardo",
+      "scientificName": "Cirsium vulgare",
+      "country": "Escocia",
+      "type": "National Flower",
+      "description": "El cardo es el emblema nacional de Escocia. Representa la antigua orden de la orden del Cardo y simboliza la defensa y el orgullo escocés.",
+      "characteristics": {
+        "color": "Púrpura",
+        "height": "60-150 cm",
+        "bloomingSeason": "Verano",
+        "habitat": "Campos y terrenos baldíos"
+      }
+    },
+    {
+      "id": "brezo-comun",
+      "name": "Brezo Común",
+      "scientificName": "Erica cinerea",
+      "description": "El brezo es una planta típica de los páramos y brezales europeos, especialmente común en Escocia e Inglaterra.",
+      "characteristics": {
+        "color": "Púrpura-rosado",
+        "height": "20-40 cm",
+        "bloomingSeason": "Verano-Otoño",
+        "habitat": "Páramos y brezales"
+      }
+    },
+    {
+      "id": "lavanda",
+      "name": "Lavanda",
+      "scientificName": "Lavandula angustifolia",
+      "description": "La lavanda es conocida por su aroma característico y sus propiedades medicinales. Es ampliamente cultivada en el Mediterráneo.",
+      "characteristics": {
+        "color": "Púrpura",
+        "height": "30-60 cm",
+        "bloomingSeason": "Verano",
+        "habitat": "Regiones mediterráneas"
+      }
+    },
+    {
+      "id": "campanula-persicifolia",
+      "name": "Campanilla",
+      "scientificName": "Campanula persicifolia",
+      "description": "La campanilla es una planta herbácea perenne conocida por sus elegantes flores en forma de campana.",
+      "characteristics": {
+        "color": "Azul o blanco",
+        "height": "30-90 cm",
+        "bloomingSeason": "Verano",
+        "habitat": "Bosques y praderas"
+      }
+    },
+    {
+      "id": "lily-valley",
+      "name": "Lirio del Valle",
+      "scientificName": "Convallaria majalis",
+      "description": "El lirio del valle es una flor delicada y fragante, aunque tóxica. Es muy apreciada en jardinería.",
+      "characteristics": {
+        "color": "Blanco",
+        "height": "15-30 cm",
+        "bloomingSeason": "Primavera",
+        "habitat": "Bosques sombreados"
+      }
+    },
+    {
+      "id": "tulipan-rojo",
+      "name": "Tulipán",
+      "scientificName": "Tulipa",
+      "description": "Los tulipanes son flores emblemáticas de los Países Bajos, aunque originalmente provienen de Asia Central.",
+      "characteristics": {
+        "color": "Variado (rojo, amarillo, rosa, etc.)",
+        "height": "20-70 cm",
+        "bloomingSeason": "Primavera",
+        "habitat": "Jardines y campos cultivados"
+      }
+    },
+    {
+      "id": "cerezo-japon",
+      "name": "Cerezo",
+      "scientificName": "Prunus serrulata",
+      "description": "El cerezo en flor o sakura es un símbolo cultural de Japón. Su floración marca el inicio de la primavera.",
+      "characteristics": {
+        "color": "Rosa pálido a blanco",
+        "height": "5-12 metros",
+        "bloomingSeason": "Primavera",
+        "habitat": "Jardines y parques"
+      }
+    },
+    {
+      "id": "peonia-china",
+      "name": "Peonía",
+      "scientificName": "Paeonia lactiflora",
+      "country": "China",
+      "type": "National Flower",
+      "description": "La peonía es considerada la flor nacional de China. Simboliza riqueza, honor y alto estatus social.",
+      "characteristics": {
+        "color": "Rosa, rojo, blanco",
+        "height": "50-100 cm",
+        "bloomingSeason": "Primavera",
+        "habitat": "Jardines y áreas cultivadas"
+      }
+    },
+    {
+      "id": "jazmin-arabe",
+      "name": "Jazmín Árabe",
+      "scientificName": "Jasminum sambac",
+      "description": "El jazmín árabe es apreciado por su intenso aroma y sus flores blancas. Es utilizado en perfumería y té.",
+      "characteristics": {
+        "color": "Blanco",
+        "height": "2-3 metros",
+        "bloomingSeason": "Todo el año en climas cálidos",
+        "habitat": "Zonas tropicales y subtropicales"
+      }
+    },
+    {
+      "id": "amapola-azul-himalaya",
+      "name": "Amapola Azul del Himalaya",
+      "scientificName": "Meconopsis grandis",
+      "description": "Una de las pocas flores que produce un verdadero color azul natural. Es nativa del Himalaya.",
+      "characteristics": {
+        "color": "Azul",
+        "height": "60-120 cm",
+        "bloomingSeason": "Verano",
+        "habitat": "Zonas alpinas del Himalaya"
+      }
+    },
+    {
+      "id": "orquidea-phalaenopsis",
+      "name": "Orquídea Phalaenopsis",
+      "scientificName": "Phalaenopsis amabilis",
+      "description": "Conocida como orquídea mariposa por la forma de sus flores. Es una de las orquídeas más populares en cultivo.",
+      "characteristics": {
+        "color": "Blanco con centro amarillo",
+        "height": "20-60 cm",
+        "bloomingSeason": "Variable",
+        "habitat": "Bosques tropicales"
+      }
+    },
+    {
+      "id": "bunchberry-canada",
+      "name": "Bunchberry",
+      "scientificName": "Cornus canadensis",
+      "country": "Canada",
+      "description": "El Bunchberry es una pequeña planta nativa de Canadá que produce flores blancas y bayas rojas.",
+      "characteristics": {
+        "color": "Blanco (flores), Rojo (bayas)",
+        "height": "10-20 cm",
+        "bloomingSeason": "Primavera-Verano",
+        "habitat": "Bosques boreales"
+      }
+    },
+    {
+      "id": "mariposa-blanca",
+      "name": "Mariposa Blanca",
+      "scientificName": "Hedychium coronarium",
+      "country": "Cuba",
+      "type": "National Flower",
+      "description": "La Mariposa Blanca es la flor nacional de Cuba. Su nombre viene de su apariencia que recuerda a una mariposa blanca.",
+      "characteristics": {
+        "color": "Blanco",
+        "height": "1-2 metros",
+        "bloomingSeason": "Verano-Otoño",
+        "habitat": "Zonas húmedas tropicales"
+      }
+    },
+    {
+      "id": "flor-espiritu-santo",
+      "name": "Flor del Espíritu Santo",
+      "scientificName": "Peristeria elata",
+      "description": "Una orquídea cuya columna central y labelo forman una estructura que se asemeja a una paloma.",
+      "characteristics": {
+        "color": "Blanco",
+        "height": "40-60 cm",
+        "bloomingSeason": "Variable",
+        "habitat": "Bosques tropicales"
+      }
+    },
+    {
+      "id": "rosa-roja",
+      "name": "Rosa Roja",
+      "scientificName": "Rosa gallica",
+      "country": "Estados Unidos",
+      "description": "La rosa es un símbolo universal del amor y la pasión. Es ampliamente cultivada en jardines.",
+      "characteristics": {
+        "color": "Rojo",
+        "height": "60-200 cm",
+        "bloomingSeason": "Primavera-Otoño",
+        "habitat": "Jardines cultivados"
+      }
+    },
+    {
+      "id": "lirio-impala",
+      "name": "Lirio Impala",
+      "scientificName": "Gloriosa superba",
+      "country": "Ghana",
+      "type": "National Flower",
+      "description": "El Lirio Impala es la flor nacional de Ghana. Sus pétalos ondulados y colores llamativos la hacen muy distintiva.",
+      "characteristics": {
+        "color": "Rojo y amarillo",
+        "height": "2-3 metros (trepadora)",
+        "bloomingSeason": "Temporada de lluvias",
+        "habitat": "Bosques tropicales"
+      }
+    },
+    {
+      "id": "protea-rey",
+      "name": "Protea Rey",
+      "scientificName": "Protea cynaroides",
+      "country": "Sudáfrica",
+      "type": "National Flower",
+      "description": "La Protea Rey es la flor nacional de Sudáfrica. Es la especie más grande del género Protea.",
+      "characteristics": {
+        "color": "Rosa a rojo",
+        "height": "1-2 metros",
+        "bloomingSeason": "Invierno-Primavera",
+        "habitat": "Zonas mediterráneas"
+      }
+    },
+    {
+      "id": "rafflesia",
+      "name": "Rafflesia",
+      "scientificName": "Rafflesia arnoldii",
+      "description": "La Rafflesia es la flor individual más grande del mundo. Es una planta parásita sin hojas ni tallo.",
+      "characteristics": {
+        "color": "Rojo-marrón",
+        "height": "Flores de hasta 1 metro de diámetro",
+        "bloomingSeason": "Variable",
+        "habitat": "Bosques tropicales"
+      }
+    },
+    {
+      "id": "tribulus-omanense",
+      "name": "Tribulus Omanense",
+      "scientificName": "Tribulus omanense",
+      "country": "Emiratos Árabes Unidos",
+      "description": "Una planta adaptada al clima desértico, con pequeñas flores amarillas.",
+      "characteristics": {
+        "color": "Amarillo",
+        "height": "10-30 cm",
+        "bloomingSeason": "Después de las lluvias",
+        "habitat": "Zonas desérticas"
+      }
+    },
+    {
+      "id": "violeta-persa-chipre",
+      "name": "Violeta Persa",
+      "scientificName": "Cyclamen cyprium",
+      "country": "Chipre",
+      "type": "National Flower",
+      "imageUrl": "/flores/flor-nacional-chipre-violeta-persa.webp",
+      "description": "La Violeta Persa o Ciclamen de Chipre es la flor nacional de Chipre. Es una especie endémica de la isla y florece durante el invierno, añadiendo color al paisaje cuando otras plantas están dormidas.",
+      "characteristics": {
+        "color": "Rosa a púrpura",
+        "height": "10-20 cm",
+        "bloomingSeason": "Otoño-Invierno",
+        "habitat": "Bosques de montaña y zonas rocosas"
+      }
+    },
+    {
+      "id": "margarita-italia",
+      "name": "Margarita Blanca",
+      "scientificName": "Leucanthemum vulgare",
+      "country": "Italia",
+      "type": "National Flower",
+      "imageUrl": "/flores/Flor-nacional-italia-margarita.webp",
+      "description": "La margarita es la flor nacional de Italia. Representa la pureza y la simplicidad. Es una flor resistente que crece en todo el país y es un símbolo de la primavera italiana.",
+      "characteristics": {
+        "color": "Blanco con centro amarillo",
+        "height": "20-60 cm",
+        "bloomingSeason": "Primavera-Verano",
+        "habitat": "Praderas y campos"
+      }
+    },
+    {
+      "id": "pasionaria-azul",
+      "name": "Pasionaria Azul",
+      "scientificName": "Passiflora caerulea",
+      "imageUrl": "/flores/Passiflora_caerulea_(makro_close-up).jpg",
+      "description": "La Pasionaria Azul es una trepadora con flores espectaculares. Sus flores complejas tienen un significado religioso en la tradición cristiana, representando elementos de la Pasión de Cristo.",
+      "characteristics": {
+        "color": "Azul, blanco y púrpura",
+        "height": "3-10 metros (trepadora)",
+        "bloomingSeason": "Verano-Otoño",
+        "habitat": "Zonas templadas y subtropicales"
+      }
+    },
+    {
+      "id": "ninfea-azul",
+      "name": "Ninfea Azul",
+      "scientificName": "Nymphaea caerulea",
+      "imageUrl": "/flores/Nymphaea_caerulea-abloom.jpg",
+      "description": "La Ninfea Azul, también conocida como Loto Azul, fue venerada en el antiguo Egipto. Sus flores se abren por la mañana y se cierran por la tarde.",
+      "characteristics": {
+        "color": "Azul claro a celeste",
+        "height": "Flores de 15-20 cm de diámetro",
+        "bloomingSeason": "Verano",
+        "habitat": "Aguas tranquilas y estanques"
+      }
+    },
+    {
+      "id": "frangipani",
+      "name": "Frangipani",
+      "scientificName": "Plumeria",
+      "imageUrl": "/flores/Plumeria_(Frangipani).jpg",
+      "description": "El Frangipani es conocido por su fragancia dulce y sus flores elegantes. Es ampliamente utilizado en jardines tropicales y tiene significado espiritual en varias culturas.",
+      "characteristics": {
+        "color": "Blanco con centro amarillo",
+        "height": "5-8 metros",
+        "bloomingSeason": "Primavera-Otoño",
+        "habitat": "Climas tropicales y subtropicales"
+      }
+    },
+    {
+      "id": "agave-karatto",
+      "name": "Agave Karatto",
+      "scientificName": "Agave karatto",
+      "imageUrl": "/flores/Agave_karatto_(7066206767).jpg",
+      "description": "El Agave Karatto es una especie impresionante con hojas grandes y carnosas. Florece una sola vez en su vida, produciendo una espectacular inflorescencia.",
+      "characteristics": {
+        "color": "Verde-azulado (hojas), amarillo (flores)",
+        "height": "1.5-2 metros",
+        "bloomingSeason": "Variable",
+        "habitat": "Zonas áridas y semiáridas"
+      }
+    },
+    {
+      "id": "campanula",
+      "name": "Campanula Pérsica",
+      "scientificName": "Campanula persicifolia",
+      "imageUrl": "/flores/Campanula_persicifolia_Tehumardi_Saaremaa.jpg",
+      "description": "La Campanula es conocida por sus elegantes flores en forma de campana. Es apreciada en jardines por su largo período de floración y su resistencia.",
+      "characteristics": {
+        "color": "Azul a violeta",
+        "height": "30-90 cm",
+        "bloomingSeason": "Verano",
+        "habitat": "Jardines y praderas"
+      }
+    },
+    {
+      "id": "rhyncholaelia-digbyana",
+      "name": "Orquídea Rhyncholaelia",
+      "scientificName": "Rhyncholaelia digbyana",
+      "imageUrl": "/flores/Rhyncholaelia_digbyana_(16395522643).jpg",
+      "description": "Esta orquídea es conocida por sus grandes flores blancas y fragantes. Es una especie importante en la hibridación de orquídeas.",
+      "characteristics": {
+        "color": "Blanco verdoso",
+        "height": "20-30 cm",
+        "bloomingSeason": "Verano",
+        "habitat": "Bosques tropicales"
+      }
+    },
+    {
+      "id": "yucca-elephantipes",
+      "name": "Yuca Pie de Elefante",
+      "scientificName": "Yucca elephantipes",
+      "imageUrl": "/flores/1024px-Yucca_elephantipes_HRM2.jpeg",
+      "description": "La Yuca Pie de Elefante es conocida por su tronco robusto y sus espectaculares flores blancas. Es una planta popular en jardines tropicales y subtropicales.",
+      "characteristics": {
+        "color": "Blanco crema",
+        "height": "6-10 metros",
+        "bloomingSeason": "Primavera-Verano",
+        "habitat": "Zonas tropicales y subtropicales"
+      }
+    }
+  ]
+}

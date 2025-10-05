@@ -1,0 +1,123 @@
+{
+  "crops": {
+    "Argentina": {
+      "mainCrops": [
+        {
+          "name": "Soja",
+          "type": "Oleaginosa",
+          "annualProduction": "50-55 millones de toneladas",
+          "mainRegions": "Pampa Húmeda, Córdoba, Santa Fe",
+          "description": "Principal cultivo de exportación, usado para aceite y alimentación animal"
+        },
+        {
+          "name": "Maíz",
+          "type": "Cereal",
+          "annualProduction": "45-50 millones de toneladas",
+          "mainRegions": "Córdoba, Buenos Aires, Santa Fe",
+          "description": "Segundo cultivo más importante, usado para alimentación y biocombustibles"
+        },
+        {
+          "name": "Trigo",
+          "type": "Cereal",
+          "annualProduction": "18-20 millones de toneladas",
+          "mainRegions": "Buenos Aires, Córdoba, Santa Fe",
+          "description": "Cultivo histórico, base de la industria panadera nacional"
+        }
+      ],
+      "cultivationPeriod": "Septiembre a Marzo (principales cultivos)",
+      "irrigationTypes": ["Secano", "Riego por aspersión", "Riego por pivote central"],
+      "sustainabilityInitiatives": "Rotación de cultivos, siembra directa, agricultura de precisión"
+    },
+    "México": {
+      "mainCrops": [
+        {
+          "name": "Maíz",
+          "type": "Cereal",
+          "annualProduction": "27 millones de toneladas",
+          "mainRegions": "Sinaloa, Jalisco, Estado de México",
+          "description": "Base de la alimentación mexicana, múltiples variedades nativas"
+        },
+        {
+          "name": "Aguacate",
+          "type": "Fruta",
+          "annualProduction": "2.3 millones de toneladas",
+          "mainRegions": "Michoacán, Jalisco, Estado de México",
+          "description": "Principal exportador mundial, conocido como 'oro verde'"
+        },
+        {
+          "name": "Chile",
+          "type": "Hortaliza",
+          "annualProduction": "3.3 millones de toneladas",
+          "mainRegions": "Chihuahua, Sinaloa, Zacatecas",
+          "description": "Gran diversidad de variedades, elemento esencial en la gastronomía"
+        }
+      ],
+      "cultivationPeriod": "Variable según región y cultivo",
+      "irrigationTypes": ["Riego por goteo", "Riego por aspersión", "Temporal"],
+      "sustainabilityInitiatives": "Agricultura tradicional, conservación de variedades nativas"
+    },
+    "Bolivia": {
+      "mainCrops": [
+        {
+          "name": "Quinua",
+          "type": "Pseudocereal",
+          "annualProduction": "65,000 toneladas",
+          "mainRegions": "Oruro, Potosí, La Paz",
+          "description": "Cultivo ancestral de alto valor nutricional"
+        },
+        {
+          "name": "Soja",
+          "type": "Oleaginosa",
+          "annualProduction": "3 millones de toneladas",
+          "mainRegions": "Santa Cruz",
+          "description": "Principal cultivo de exportación en las tierras bajas"
+        }
+      ],
+      "cultivationPeriod": "Variable por altitud y región",
+      "irrigationTypes": ["Riego por goteo", "Riego tradicional", "Secano"],
+      "sustainabilityInitiatives": "Preservación de técnicas ancestrales, terrazas de cultivo"
+    },
+    "India": {
+      "mainCrops": [
+        {
+          "name": "Arroz",
+          "type": "Cereal",
+          "annualProduction": "120 millones de toneladas",
+          "mainRegions": "Punjab, Uttar Pradesh, West Bengal",
+          "description": "Alimento básico y principal cultivo del país"
+        },
+        {
+          "name": "Algodón",
+          "type": "Fibra",
+          "annualProduction": "35 millones de balas",
+          "mainRegions": "Gujarat, Maharashtra",
+          "description": "Mayor productor mundial de algodón"
+        }
+      ],
+      "cultivationPeriod": "Kharif (monzón) y Rabi (invierno)",
+      "irrigationTypes": ["Riego por inundación", "Riego por goteo", "Dependiente de monzones"],
+      "sustainabilityInitiatives": "Agricultura orgánica, gestión integrada de plagas"
+    },
+    "China": {
+      "mainCrops": [
+        {
+          "name": "Arroz",
+          "type": "Cereal",
+          "annualProduction": "210 millones de toneladas",
+          "mainRegions": "Provincias del sur y del Yangtze",
+          "description": "Principal productor mundial de arroz"
+        },
+        {
+          "name": "Té",
+          "type": "Cultivo perenne",
+          "annualProduction": "2.8 millones de toneladas",
+          "mainRegions": "Yunnan, Fujian, Zhejiang",
+          "description": "Líder mundial en producción de té, con variedades únicas"
+        }
+      ],
+      "cultivationPeriod": "Variable según región y cultivo",
+      "irrigationTypes": ["Riego por inundación", "Riego por goteo", "Terrazas"],
+      "sustainabilityInitiatives": "Agricultura vertical, tecnología agrícola avanzada"
+    }
+  }
+}

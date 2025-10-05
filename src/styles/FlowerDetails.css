@@ -1,0 +1,151 @@
+.flower-details {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.flower-details .full-width {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.flower-image-container {
+  position: relative;
+  width: 100%;
+  height: 220px; /* Altura ligeramente reducida */
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  margin: -0.5rem 0 1rem 0; /* Margen negativo arriba para subir el contenedor */
+  overflow: hidden;
+}
+
+.flower-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flower-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transition: all 0.5s ease;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1rem; /* Añadir un poco de padding interno */
+}
+
+.flower-image-container:hover .flower-image {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Sombra y borde mejorados */
+.flower-image-wrapper {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Caption para el nombre de la flor */
+.flower-image-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  padding: 1rem;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.flower-image-container:hover .flower-image-caption {
+  transform: translateY(0);
+}
+
+.flower-name {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Media queries para responsive */
+@media (max-width: 768px) {
+  .flower-image-container {
+    height: 180px;
+    margin-top: -0.25rem; /* Ajuste del margen negativo para tablets */
+  }
+  
+  .flower-image-caption {
+    padding: 0.75rem;
+  }
+  
+  .flower-name {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .flower-image-container {
+    height: 160px;
+    margin-top: 0; /* Sin margen negativo en móviles */
+  }
+}
+
+.flower-details .mappage-detail-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.75rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.flower-details .mappage-detail-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.flower-details .mappage-detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.flower-details .mappage-detail-value {
+  color: var(--leaf-green);
+  font-weight: 500;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.flower-details .mappage-detail-label {
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Estilos específicos para la descripción */
+.flower-details .mappage-detail-item:has(.mappage-detail-label:contains("Description")) .mappage-detail-value {
+  font-style: italic;
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+
+/* Estilos para el nombre científico */
+.flower-details .mappage-detail-item:has(.mappage-detail-label:contains("Scientific Name")) .mappage-detail-value {
+  font-style: italic;
+  color: var(--sky-blue);
+}
+
+/* Estilos para el tipo de flor */
+.flower-details .mappage-detail-item:has(.mappage-detail-label:contains("Type")) .mappage-detail-value {
+  color: var(--sun-yellow);
+  font-weight: bold;
+}
