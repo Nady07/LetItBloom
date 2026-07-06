@@ -39,16 +39,16 @@ Este proyecto forma parte de mi portafolio de aplicaciones con enfoque en tecnol
    
 2. Instala las dependencias:
 
-**bash
-**npm install
-** o con yarn
-**yarn install
+- bas
+- npm install
+- o con yarn
+- yarn install
 
 3. Ejecuta el servidor de desarrollo:
    
-**bash
-**npm run dev
-** o con yarn
-**yarn dev
+- bash
+- npm run dev
+- o con yarn
+- yarn dev
 
 Abre tu navegador en: http://localhost:5173
