@@ -38,17 +38,15 @@ Este proyecto forma parte de mi portafolio de aplicaciones con enfoque en tecnol
    cd LetItBloom
    
 2. Instala las dependencias:
-
-- bas
-- npm install
-- o con yarn
-- yarn install
+   ```bash
+   npm install
+   --con yarn
+   yarn install
 
 3. Ejecuta el servidor de desarrollo:
-   
-- bash
-- npm run dev
-- o con yarn
-- yarn dev
+   ```bash
+   npm run dev
+   --o con yarn
+   yarn dev
 
 Abre tu navegador en: http://localhost:5173
